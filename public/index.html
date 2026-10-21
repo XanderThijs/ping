@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ping</title><meta name="robots" content="noindex"><meta name="color-scheme" content="dark">
+<style>
+@font-face{font-family:Geist;src:url(/fonts/geist.woff2) format("woff2");font-weight:100 900;font-display:swap}
+:root{--bg:#060A12;--s:#0D1422;--ink:#EAF0FA;--mu:#8995AB;--ln:#19233A;--ac:#7C8CFF;--g:#35D0B4;--w:#F5B94A;--b:#FF7E67;--sc:var(--g)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 Geist,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px clamp(16px,4vw,48px);border-bottom:1px solid var(--ln)}
+header b{font-weight:600;font-size:18px;letter-spacing:-.02em}header span{color:var(--mu);font-size:14px}
+main{padding:32px clamp(16px,4vw,48px) 60px;max-width:1280px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+h1{margin:0;font:600 clamp(28px,4vw,40px)/1.1 Geist,sans-serif;letter-spacing:-.045em;display:flex;align-items:center;gap:14px}
+.dot{width:14px;height:14px;border-radius:50%;background:var(--sc);box-shadow:0 0 0 5px color-mix(in srgb,var(--sc) 20%,transparent);flex:none}
+.sub{color:var(--mu);margin-top:8px;font-size:15px}
+button{font:inherit;font-size:14px;color:var(--ink);background:transparent;border:1px solid #26324F;border-radius:9px;padding:9px 16px;cursor:pointer}button:hover{border-color:var(--ac)}button:disabled{opacity:.5}
+.grid{display:grid;grid-template-columns:1.55fr 1fr;gap:18px;align-items:start}.col{display:grid;gap:18px}
+.card{background:var(--s);border:1px solid var(--ln);border-radius:14px;padding:22px}
+.card h2{margin:0 0 14px;font:600 17px Geist,sans-serif;letter-spacing:-.02em;display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.card h2 small{font:400 13px Geist,sans-serif;color:var(--mu)}
+.svc{display:grid;grid-template-columns:150px 1fr 110px;gap:18px;align-items:center;padding:14px 0;border-top:1px solid var(--ln)}.svc:first-of-type{border-top:0}
+.svc .nm b{font-weight:500;display:flex;align-items:center;gap:8px}.svc small{display:block;color:var(--mu);font-size:13px}
+.led{width:9px;height:9px;border-radius:50%;background:var(--g);flex:none}.led.d{background:var(--b)}.led.u{background:var(--mu)}
+.bars{display:flex;gap:2px;height:28px}.bars s{flex:1;background:var(--g);opacity:.85;border-radius:2px;text-decoration:none}.bars s.w{background:var(--w)}.bars s.b{background:var(--b)}.bars s.na{background:var(--ln);opacity:1}
+.r{text-align:right;font-size:14px;color:var(--mu)}.r b{color:var(--ink);font-weight:500}
+.big{font:600 44px/1 Geist,sans-serif;letter-spacing:-.05em}.big small{font-size:18px;color:var(--mu);letter-spacing:0}
+.meter{height:10px;background:#111A2C;border-radius:5px;overflow:hidden;margin:14px 0 8px}.meter i{display:block;height:100%;background:var(--g);width:0}.meter i.hot{background:var(--b)}
+.mu{color:var(--mu);font-size:13.5px}
+.row{display:flex;justify-content:space-between;gap:12px;font-size:14.5px;padding:9px 0;border-top:1px solid var(--ln)}.row:first-of-type{border-top:0}
+.ok{color:var(--g)}.bad{color:var(--b)}
+table{width:100%;border-collapse:collapse;font-size:14.5px}td,th{text-align:left;padding:11px 8px;border-top:1px solid var(--ln)}th{color:var(--mu);font-weight:400;font-size:13px;border-top:0}
+.pill{padding:2px 10px;border-radius:99px;font-size:12.5px;white-space:nowrap}.pill.r1{background:#35D0B41f;color:var(--g)}.pill.o{background:#FF7E6720;color:var(--b)}
+.field{display:grid;gap:6px;margin-top:12px}.field span{font-size:13px;color:var(--mu)}.field div{background:var(--bg);border:1px solid #26324F;border-radius:8px;padding:9px 12px;font-size:14px}
+.empty{color:var(--mu);font-size:14.5px;padding:8px 0}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.svc{grid-template-columns:1fr 90px}.svc .bars{grid-column:1/-1;order:3}}
+</style></head><body>
+<header><b>Ping</b><span id="who">Loading…</span></header>
+<main>
+  <div class="top"><div><h1><i class="dot" id="dot"></i><span id="head">Loading…</span></h1><div class="sub" id="sub"></div></div><button id="test">Send test alert</button></div>
+  <div class="grid">
+    <div class="col">
+      <div class="card"><h2>Services <small>last 60 days</small></h2><div id="svc"></div></div>
+      <div class="card"><h2>Incidents <small>newest first</small></h2><div id="inc"></div></div>
+    </div>
+    <div class="col">
+      <div class="card"><h2>Disk <small id="diskNote"></small></h2><div id="disk"></div></div>
+      <div class="card"><h2>Backups <small id="bkNote"></small></h2><div id="bk"></div></div>
+      <div class="card"><h2>Alerts <small id="alNote"></small></h2><div id="al"></div></div>
+    </div>
+  </div>
+</main>
+<script src="app.js"></script>
+</body></html>

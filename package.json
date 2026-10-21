@@ -1,0 +1,2 @@
+{ "name": "ping", "version": "1.0.0", "description": "Self-hosted monitor for apps, disk and backups with phone alerts. No dependencies.", "private": true, "license": "MIT",
+  "scripts": { "start": "node server.js", "test": "node --test test/" }, "engines": { "node": ">=22" } }

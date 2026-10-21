@@ -1,0 +1,34 @@
+name: ping
+services:
+  ping:
+    build: .
+    image: ping-monitor
+    container_name: ping
+    restart: unless-stopped
+    env_file: .env                       # PING_PASSWORD and NTFY_URL live here, not in this file (copy .env.example)
+    environment:
+      PORT: "3000"
+      DATA_DIR: /data
+      BACKUP_DIR: /backups
+      # Each target is requested through the front door (Caddy), so green means the whole route works.
+      TARGETS: >-
+        [{"name":"Dragonwatch","url":"http://caddy/dragonwatch/","path":"/dragonwatch/","note":"Node.js + SQLite"},
+         {"name":"Encounter lab","url":"http://caddy/encounter/","path":"/encounter/","note":"Browser ML model"},
+         {"name":"Portfolio","url":"http://caddy/","path":"/","note":"Static site"}]
+    volumes:
+      - ping-data:/data
+      - ../../backups:/backups:ro        # the folder ./srv backup writes to; read-only, also gives the disk usage
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - web
+volumes:
+  ping-data:
+networks:
+  web:
+    external: true
